@@ -1,5 +1,5 @@
 # NetTrayIcon
-Network info with sytray icon
+Network info with sytray icon.
 
 It could be used for minimized systems where
   1. network managed over systemd-networkd, or
@@ -9,4 +9,4 @@ Script creates icon in system tray with pop-up about configured interfaces, thei
 
 Example:
 
-```ens32 : 10.1.10.2 : up```
+```ens32 : 10.1.10.2/24 : up```
