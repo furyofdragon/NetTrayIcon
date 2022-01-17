@@ -14,12 +14,28 @@ from gi.repository import Gtk, GObject
 
 UPDATE_INTERVAL_MS = 5000
 
-currpath = os.path.dirname(os.path.realpath(__file__))
-APP_NETWORK_ON = currpath + '/gtk-connect.svg'
-APP_NETWORK_OFF = currpath + '/gtk-disconnect.svg'
 COLLATE = "utf-8"
 STATUS_UP = "up"
 STATUS_DOWN = "down"
+
+currpath = os.path.dirname(os.path.realpath(__file__))
+FALLBACK_APP_NETWORK_ON = currpath + '/gtk-connect.svg'
+FALLBACK_APP_NETWORK_OFF = currpath + '/gtk-disconnect.svg'
+
+
+def get_current_icon_theme():
+    return Gtk.Settings.get_default().get_property("gtk-icon-theme-name")
+
+
+def set_icons():
+    theme = get_current_icon_theme()
+    iconpath = "/usr/share/icons/" + theme + "/scalable/status/"
+    APP_NETWORK_ON = iconpath + 'network-idle.svg'
+    APP_NETWORK_OFF = iconpath + 'network-offline.svg'
+    if os.path.exists(APP_NETWORK_ON) and os.path.exists(APP_NETWORK_OFF):
+        return APP_NETWORK_ON, APP_NETWORK_OFF
+    else:
+        return FALLBACK_APP_NETWORK_ON, FALLBACK_APP_NETWORK_OFF
 
 
 def get_ifaces():
@@ -29,6 +45,7 @@ def get_ifaces():
 
 
 def update():
+    APP_NETWORK_ON, APP_NETWORK_OFF = set_icons()
     ADDRINFO = []
     n_up = 0
     for IFACE in IFACES:
@@ -52,6 +69,7 @@ def update():
 
 
 if __name__ == "__main__":
+    APP_NETWORK_ON, APP_NETWORK_OFF = set_icons()
     icon = Gtk.StatusIcon()
     icon.set_from_file(APP_NETWORK_OFF)
     icon.set_visible(True)
